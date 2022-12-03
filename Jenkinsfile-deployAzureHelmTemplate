@@ -1,0 +1,23 @@
+@Library(['com.org.jenkins.pipeline.library', 'demo-shared-jenkins-library']) _
+
+def defaults = [
+                 gitProjectName         : '',
+                 githubRepository       : 'demo',
+                 branchName             : 'master',
+                 dockerRegistry         : 'docker.com',
+                 dockerNamespace        : 'demo',
+                 dockerImageName        : '',
+                 dockerImageTag         : 'latest-master',
+                 deploymentEnvironment  : 'dev',
+                 tenant                 : 'demo',
+                 azureContainerRegistry : 'demoacrcommon.azurecr.io',
+                 forceDeployConfig      : false,
+                 dockerCredentialsId    : 'demo_cicd_service_account',
+                 gitCredentialsId       : 'demo_cicd_service_account',
+                 azureCredentialsId     : 'demo-azure-sp-clinical-dev-terraform-ci',
+
+               ]
+// ... but merge defaults with actual parameters for jobs that supply them
+def config = merge(params, defaults)
+
+clAzureDeployImage(config)

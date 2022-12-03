@@ -1,0 +1,36 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+appName: APPLICATION_NAME
+imageTag: tst
+comodoHostPrefix: test
+urlAbbrev: INGRESS_PATH
+
+enableAutoscaling: false
+spring:
+  profiles:
+    active: default,cloud
+  datasource:
+    url: 
+    maxpoolsize: 5
+
+demo:
+  authoring:
+    deployment:
+      tokenurl: https://test-demo-api.org.com/auth/oauth/token
+      url: https://test-demo-api.org.com/rulesapi/graphql/bpmSpecMutation
+
+jwtIssuerUri: demo-test
+jwtSetUri: https://test-demo-api.org.com/auth/oauth/jwks
+corsAllowedOrigins: https://test-clinical.org.com,https://test-demo-api.org.com
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+replicaCount: 1

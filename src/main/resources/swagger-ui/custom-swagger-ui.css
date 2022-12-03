@@ -1,0 +1,37 @@
+html
+{
+    box-sizing: border-box;
+    overflow: -moz-scrollbars-vertical;
+    overflow-y: scroll;
+}
+
+*,
+*:before,
+*:after
+{
+    box-sizing: inherit;
+}
+
+body
+{
+    margin:0;
+    background: #fafafa;
+}
+
+/* CUSTOM FOR demo */
+
+.swagger-ui img {
+    content:url("./logo_small.png");
+}
+.swagger-ui div.topbar-wrapper a.link:after {
+    content: "Swagger UI - demo";
+    padding-left: 1rem;
+}
+.swagger-ui .topbar .download-url-wrapper input[type=text] {
+    border-color: #F39918;
+}
+.swagger-ui .topbar .download-url-wrapper .download-url-button {
+    background: #F39918;
+}
+
+/* CUSTOM FOR demo */

@@ -1,0 +1,28 @@
+@Library(['com.org.jenkins.pipeline.library', 'demo-shared-jenkins-library']) _
+
+def isChangeRequest = env.CHANGE_ID ? true : false
+
+// because PR scans are not triggered with parameters, specify the defaults here ...
+def defaults = [
+        scarProjectName          : 'demo_org',
+        scarVersionName          : 'APPLICATION_NAME',
+        fortifyExclusions        : '**/pom.xml,**/src/test/**/*',
+        downloadFromScar         : true,
+        uploadToScar             : !isChangeRequest,
+        newIssuesOnly            : isChangeRequest,
+        includeLowPriorityIssues : true,
+        criticalThreshold        : '0',
+        highThreshold            : '0',
+        mediumThreshold          : '0',
+        lowThreshold             : '0',
+        sendAuthorIssueEmail     : true,
+        javaVersion              : '11.0'
+    ]
+
+// ... but merge defaults with actual parameters for jobs that supply them
+def config = merge(params, defaults)
+
+clFortifyMavenScan(config)
+
+
+

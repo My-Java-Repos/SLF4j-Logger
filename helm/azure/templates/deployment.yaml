@@ -1,0 +1,78 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}
+  labels:
+    app: {{ .Values.appName }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    template: {{ .Template.Name }}
+spec:
+  affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ .Values.appName }}
+              topologyKey: topology.kubernetes.io/zone
+            weight: 100    
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 50%
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+     {{- if .Values.includeNodePoolSelector }}
+      nodeSelector:
+        pool: {{ .Values.nodePoolSelector }}
+     {{- end }}
+      containers:
+        - image: {{ .Values.containerRegistry }}/{{ .Values.imageName | default .Values.appName }}:{{ .Values.imageTag }}
+          imagePullPolicy: Always
+          name: {{ .Values.appName }}
+          readinessProbe:
+            httpGet:
+              path: https://dev-demo-api.org.com/auth/health
+            failureThreshold: 1
+            periodSeconds: 10
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.appName }}-config-map
+            - secretRef:
+                name: {{ .Values.appName }}-secrets
+          env:
+            - name: demo_CACHE_RESET_CONSUMERNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+      {{- if .Values.includetolerations }}
+      tolerations:
+      - key: {{ .Values.tolerationsKey }}
+        operator: "Equal"
+        value: {{ .Values.tolerationsValue }}
+        effect: "NoSchedule"
+      {{- end }}

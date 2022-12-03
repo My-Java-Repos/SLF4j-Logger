@@ -1,0 +1,12 @@
+{{- if .Values.enablePdb }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-{{ .Values.appName }}
+  namespace: {{ .Values.namespace }}
+spec:
+  minAvailable: {{ .Values.minAvailable }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+{{- end }}

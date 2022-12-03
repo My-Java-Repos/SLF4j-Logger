@@ -1,0 +1,24 @@
+<ehcache>
+<!-- DO NOT DELETE this file but Application user can change cache configuration -->
+	<defaultCache maxElementsInMemory="2000" eternal="true"
+		overflowToDisk="false" timeToLiveSeconds="1200" />
+	<!-- Application Roles Cache (1 hour validity)  -->
+	<cache name="appRoles" 
+		maxBytesLocalHeap="10M" 
+		eternal="false"
+		timeToLiveSeconds="3600"
+		timeToIdleSeconds="0"
+		overflowToDisk="false" 
+		diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" />
+	
+	<!-- Decision Definition items cache (24 hours validity)  -->
+	<cache name="decisionDefinitions" 
+		maxBytesLocalHeap="100M" 
+		eternal="false"
+		timeToLiveSeconds="86400"
+		timeToIdleSeconds="0"
+		overflowToDisk="false" 
+		diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" />
+</ehcache>

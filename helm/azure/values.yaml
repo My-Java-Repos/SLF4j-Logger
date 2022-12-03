@@ -1,0 +1,22 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+appName: APPLICATION_NAME
+namespace: NAMESPACE_NAME
+imageTag: latest
+urlAbbrev: INGRESS_PATH
+nodePoolSelector: app
+minAvailable: 30%
+enablePdb: false
+minAvailable: 30%
+cpuRequest: 500m
+memoryRequest: 512Mi
+cpuLimit: 1000m
+memoryLimit: 1Gi
+enableAutoscaling: true
+minReplicas: 2
+maxReplicas: 3
+targetCPUUtilizationPercentage: 80
+targetMemoryUtilizationPercentage: 80
+# No local configuration

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty name="appName" source="spring.application.name" defaultValue="demo"/>
+    <timestamp key="timestamp-by-second" datePattern="yyyyMMdd'T'HHmmss"/>
+
+    <springProfile name="!cloud">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <charset>UTF-8</charset>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) client:%X{client} url:%X{url} uuid:%X{uuid} %logger{36}.%M - %msg%n</Pattern>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <springProfile name="cloud">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <timestamp>
+                        <timeZone>UTC</timeZone>
+                    </timestamp>
+                    <pattern>
+                        <pattern>
+{
+    "severity": "%level",
+    "service": "${appName:-}",
+    "trace": "%X{X-B3-TraceId:-na}",
+    "span": "%X{X-B3-SpanId:-na}",
+    "parent": "%X{X-B3-ParentSpanId:-na}",
+    "exportable": "%X{X-Span-Export:-na}",
+    "thread": "%thread",
+    "class": "%logger",
+    "request_id": "%X{request_id:-na}",
+    "external_ref_id": "%X{external_ref_id:-na}",
+    "request_ts": "%X{request_ts:-na}",
+    "trans_dur": "%X{trans_dur:-na}",
+    "client": "%X{client}",
+    "url": "%X{url}",
+    "uuid": "%X{uuid}",
+    "log-message": "%message %exception"
+}
+                        </pattern>
+                    </pattern>
+                </providers>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

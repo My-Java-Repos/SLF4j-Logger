@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: INGRESS_PATH
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/MyDatabase?sslmode=disable&useServerPrepStmts=false&rewriteBatchedStatements=true}
+    username: ${SPRING_DATASOURCE_USERNAME:admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:superdooper}
+    platform: postgresql
+    initialization-mode: always
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 30
+      idle-timeout: 600000
+      max-lifetime: 2000000
+      connection-test-query: SELECT 1
+      pool-name: camunda-spring-boot
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUERURI:demo-dev}
+          jws-algorithm: RS512
+          jwk-set-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI:https://dev-demo-api.org.com/auth/oauth/jwks}
+
+  #Spring JDBC Session used to hold session data (camunda webapp scalability fix)
+  session:
+    store-type: ${SPRING_SESSION_STORETYPE:jdbc}
+    timeout: ${SPRING_SESSION_TIMEOUT:300}
+    jdbc.initialize-schema: always
+    jdbc.schema: classpath:org/springframework/session/jdbc/schema-postgresql.sql
+    
+# This is an example of how JWT security might work.
+# See the README.md for more discussion.
+# With this block commented out, APIs do not require a JWT token
+#demo.jwt:
+#  protectedUrls:
+#    - type: ANT
+#      pattern: /engine-rest/**
+#      roles: [ ROLE_ONE ]
+
+camunda.bpm.admin-user:
+  id: ${CM_ADMIN_USR:admin}
+  password: ${CM_ADMIN_PWD:admin}
+
+demo:
+#Camuna instance application version (increment for every deployment if needed)
+  app.version: 1.0.0
+#Restrict access for camuna provided REST API's (it should be false for BPM REPO)
+  servlet.filter.engine-rest: false
+#The below configurations are used to send Camunda auto deployment details to Rule Authoring service.  
+  authoring.deployment:
+    tokenurl: ${demo_AUTHORING_DEPLOYMENT_TOKENURL:https://dev-demo-api.org.com/auth/oauth/token}
+    clientid: ${demo_AUTHORING_DEPLOYMENT_CLIENTID:deployer_non_prod}
+    clientsecret: ${demo_AUTHORING_DEPLOYMENT_CLIENTSECRET:}
+    url: ${demo_AUTHORING_DEPLOYMENT_URL:}
+
+## The below property should be the micro product name (short name) and it will be for the entire servlet context
+## http://localhost:8080/demo/camunda/
+server:
+  servlet:
+    context-path: /INGRESS_PATH/${demo.app.version}
+
+  # forwarding for swagger
+  forward-headers-strategy: framework
+
+logging:
+  level:
+    org.apache.ibatis: WARN
+    javax.activation: WARN
+    org.springframework: WARN
+    org.camunda: INFO
+    com.org.demo: INFO

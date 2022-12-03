@@ -1,0 +1,45 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+appName: APPLICATION_NAME
+imageTag: prod
+urlAbbrev: INGRESS_PATH
+enablePdb: true
+
+spring:
+  profiles:
+    active: default,cloud
+  datasource:
+    url: 
+    maxpoolsize: 30
+
+demo:
+  authoring:
+    deployment:
+      tokenurl: https://demo-api.org.com/auth/oauth/token
+      url: https://demo-api.org.com/rulesapi/graphql/bpmSpecMutation
+
+jwtIssuerUri: demo-prod
+jwtSetUri: https://demo-api.org.com/auth/oauth/jwks
+corsAllowedOrigins: https://clinical.org.com,https://demo-api.org.com
+
+resources:
+  requests:
+    cpu: 6000m
+    memory: 12Gi
+  limits:
+    cpu: 7500m
+    memory: 15Gi
+
+enableAutoscaling: true
+replicaCount: 3
+targetCPUUtilizationPercentage: 65
+targetMemoryUtilizationPercentage: 80
+minReplicas: 3
+maxReplicas: 5
+includetolerations: true
+tolerationsKey: workload
+tolerationsValue: bpmdomain
+includeNodePoolSelector: true
+nodePoolSelector: bpm-domain

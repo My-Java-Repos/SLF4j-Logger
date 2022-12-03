@@ -1,0 +1,48 @@
+<process-application
+	xmlns="http://www.camunda.org/schema/1.0/ProcessApplication"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<!--
+demo Camunda workspaces are Camunda Tenant Enabled by default, so Rules(DMN) and WorkFlows(BPMN/CMMN) has to be organized under "src/main/resources" in particular way to work with OCM Security. 
+
+First Level folder should be organization id and you can take from OCM User Management. For Example: demo
+Sub level folder is name of the application, For Example: um_intake_dmn_grp	
+
+
+You must specify tenant id in this file and Tenant ID is combination of organization ID and Application name (without special characters). 
+For Example: 
+organization id = demo 
+application name = um_intake_dmn_grp 
+tenant id = demoumintakedmngrp
+
+You can configuration many applications in similar way by introducing new <process-archive> section (See commented out example).
+
+Kindly don't change other configurations unless it's necessary (except tenantId and resourceRootPath).
+
+IMPORTANT: For local remove "BOOT-INF/classes/" from resourceRootPath.
+-->
+
+    <process-archive name="orgId@application_bpm_grp" tenantId="orgidapplicationbpmgrp">
+        <process-engine>default</process-engine>
+        <properties>
+            <property name="resourceRootPath">BOOT-INF/classes/orgId/application_bpm_grp/</property>
+            <!-- Uncomment below line for local -->
+            <!-- <property name="resourceRootPath">orgId/application_bpm_grp/</property> -->
+            <property name="isDeleteUponUndeploy">false</property>
+            <property name="isScanForProcessDefinitions">true</property>
+            <property name="isDeployChangedOnly">true</property>
+        </properties>
+    </process-archive>
+    
+  <!-- Another Application example
+    <process-archive name="orgId@anotherapp_bpm_grp" tenantId="orgidanotherappbpmgrp">
+        <process-engine>default</process-engine>
+        <properties>
+            <property name="resourceRootPath">BOOT-INF/classes/orgId/anotherapp_bpm_grp/</property>
+            <property name="isDeleteUponUndeploy">false</property>
+            <property name="isScanForProcessDefinitions">true</property>
+            <property name="isDeployChangedOnly">true</property>
+        </properties>
+    </process-archive>
+     -->
+</process-application>

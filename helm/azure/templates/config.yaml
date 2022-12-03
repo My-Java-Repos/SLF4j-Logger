@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.appName }}-config-map
+  labels:
+    app: {{ .Values.appName }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    template: {{ .Template.Name }}
+
+data:
+
+  # We are relying on Spring Boot's built-in facility for environment variables.
+  # For instance, property demo.token.signingKeysetSource maps to $demo_TOKEN_SIGNINGKEYSETSOURCE.
+  # See: https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-relaxed-binding
+  # Note that all environment variables are quoted, to avoid type-related conflicts
+
+  SPRING_PROFILES_ACTIVE: {{ quote .Values.spring.profiles.active }}
+  SPRING_DATASOURCE_URL: {{ quote .Values.spring.datasource.url }}
+  SPRING_DATASOURCE_MAX_POOL_SIZE : {{ quote .Values.spring.datasource.maxpoolsize }}
+
+  demo_AUTHORING_DEPLOYMENT_TOKENURL: {{ .Values.demo.authoring.deployment.tokenurl }}
+  demo_AUTHORING_DEPLOYMENT_URL: {{ .Values.demo.authoring.deployment.url }}
+  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUERURI: {{ .Values.jwtIssuerUri }}
+  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: {{ .Values.jwtSetUri }}
+  CORS_ALLOWED_ORGINS: {{ .Values.corsAllowedOrigins }}
